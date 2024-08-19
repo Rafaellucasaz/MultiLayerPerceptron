@@ -25,7 +25,7 @@ def propagacaoDireta(entrada,pesosEntradaOculta,pesosSaidaOculta) :
 
 def retroPropagacao(entrada,saida,ocultaOutput,saidaOutput,pesosSaidaOculta,pesosEntradaOculta,taxaAprendizado):
     erroSaida = (saida - saidaOutput) * derivadaSigmoide(saidaOutput)
-
+    
     erroOculta = derivadaSigmoide(ocultaOutput) * np.dot(erroSaida,pesosSaidaOculta.T)
 
     pesosSaidaOculta += np.dot(ocultaOutput.T,erroSaida) * taxaAprendizado
@@ -37,14 +37,17 @@ def retroPropagacao(entrada,saida,ocultaOutput,saidaOutput,pesosSaidaOculta,peso
 
 
 
-def treino(x,y,epocas, taxaAprendizado):
+def treino(x,y,taxaAprendizado):
     tamanhoEntrada = x.shape[1]
     tamanhoOculta = 4
     tamanhoSaida = y.shape[1]
 
     pesosEntradaOculta = inicializarPesos(2,4)
     pesosSaidaOculta = inicializarPesos(4,1)
-    for i in range(epocas):
+    erroGeral = 1
+    i = 0
+    while(erroGeral > 0):
+        i = i + 1
         ocultaOutput,saidaOutput = propagacaoDireta(x,pesosEntradaOculta,pesosSaidaOculta)
         pesosSaidaOculta,pesosEntradaOculta,erroGeral = retroPropagacao(x,y,ocultaOutput,saidaOutput,pesosSaidaOculta,pesosEntradaOculta,taxaAprendizado)
         
@@ -59,7 +62,7 @@ entrada = np.array([[1,0],[1,1],[0,0],[0,1]])
 
 saida = np.array([[1], [0], [0], [1]])
 
-pesosSaidaOculta,pesosEntradaOculta = treino(entrada,saida,10000,0.1)
+pesosSaidaOculta,pesosEntradaOculta = treino(entrada,saida,0.9)
 
 ocultaOutput,saidaOutput = propagacaoDireta(entrada,pesosEntradaOculta,pesosSaidaOculta)
 
